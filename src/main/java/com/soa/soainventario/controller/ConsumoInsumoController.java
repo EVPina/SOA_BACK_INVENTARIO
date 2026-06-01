@@ -32,7 +32,7 @@ public class ConsumoInsumoController {
     @Operation(summary = "Actualizar cantidad de consumo")
     public ResponseEntity<ConsumoInsumoResponseDTO> actualizarConsumo(
             @PathVariable UUID consumoId,
-            @RequestParam BigDecimal cantidad) {
+            @RequestParam double cantidad) {
         return ResponseEntity.ok(consumoInsumoService.actualizarConsumo(consumoId, cantidad));
     }
     
@@ -58,7 +58,7 @@ public class ConsumoInsumoController {
     
     @GetMapping("/producto/{productoId}/costo")
     @Operation(summary = "Calcular costo de producción de un producto")
-    public ResponseEntity<BigDecimal> calcularCostoProduccion(@PathVariable UUID productoId) {
+    public ResponseEntity<Double> calcularCostoProduccion(@PathVariable UUID productoId) {
         return ResponseEntity.ok(consumoInsumoService.calcularCostoProduccion(productoId));
     }
 }

@@ -48,7 +48,7 @@ public class ConsumoInsumoService {
     
     // Actualizar cantidad de consumo
     @Transactional
-    public ConsumoInsumoResponseDTO actualizarConsumo(UUID consumoId, BigDecimal nuevaCantidad) {
+    public ConsumoInsumoResponseDTO actualizarConsumo(UUID consumoId, double nuevaCantidad) {
         ConsumoInsumo consumo = consumoInsumoRepository.findById(consumoId)
                 .orElseThrow(() -> new ResourceNotFoundException("Consumo no encontrado"));
         
@@ -83,10 +83,9 @@ public class ConsumoInsumoService {
     
     // Calcular costo de producción de un producto
     @Transactional(readOnly = true)
-    public BigDecimal calcularCostoProduccion(UUID productoId) {
-        BigDecimal costo = consumoInsumoRepository.calcularCostoProduccion(productoId);
-        return costo != null ? costo : BigDecimal.ZERO;
-    }
+    public double calcularCostoProduccion(UUID productoId) {
+        double costo = consumoInsumoRepository.calcularCostoProduccion(productoId);
+        return costo;}
     
     // Obtener resumen de insumos por producto
     @Transactional(readOnly = true)
@@ -104,9 +103,16 @@ public class ConsumoInsumoService {
                 .unidadMedida(consumo.getInsumo().getUnidadMedida())
                 .cantidadPorPorcion(consumo.getCantidadPorPorcion())
                 .costoUnitario(consumo.getInsumo().getCostoPorUnidad())
-                .costoTotal(consumo.getCantidadPorPorcion()
-                        .multiply(consumo.getInsumo().getCostoPorUnidad()))
+                .costoTotal(consumo.getCantidadPorPorcion() * consumo.getInsumo().getCostoPorUnidad())
                 .createdAt(consumo.getCreatedAt())
                 .build();
+    }
+
+    // En InsumoService.java
+
+    @Transactional(readOnly = true)
+    public Insumo buscarInsumoEntity(UUID id) {
+        return insumoRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Insumo no encontrado con id: " + id));
     }
 }

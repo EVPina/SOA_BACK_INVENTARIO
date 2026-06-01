@@ -32,20 +32,20 @@ public class MovimientoService {
         Insumo insumo = insumoRepository.findById(request.getInsumoId())
                 .orElseThrow(() -> new ResourceNotFoundException("Insumo no encontrado con id: " + request.getInsumoId()));
         
-        BigDecimal stockActual = insumo.getStockActual();
-        BigDecimal nuevoStock;
+        double stockActual = insumo.getStockActual();
+        double nuevoStock;
         
         // Calcular nuevo stock según tipo de movimiento
         switch (request.getTipo()) {
             case "ENTRADA":
-                nuevoStock = stockActual.add(request.getCantidad());
+                nuevoStock = stockActual + request.getCantidad();
                 break;
             case "SALIDA":
-                if (stockActual.compareTo(request.getCantidad()) < 0) {
+                if (stockActual < request.getCantidad()) {
                     throw new RuntimeException("Stock insuficiente. Stock actual: " + stockActual + 
                                                ", Cantidad solicitada: " + request.getCantidad());
                 }
-                nuevoStock = stockActual.subtract(request.getCantidad());
+                nuevoStock = stockActual - request.getCantidad();
                 break;
             case "AJUSTE":
                 nuevoStock = request.getCantidad();
@@ -112,17 +112,14 @@ public class MovimientoService {
     // Obtener estadísticas de insumo
     @Transactional(readOnly = true)
     public InsumoEstadisticasDTO getEstadisticasInsumo(UUID insumoId) {
-        BigDecimal totalEntradas = movimientoRepository.sumEntradasByInsumo(insumoId);
-        BigDecimal totalSalidas = movimientoRepository.sumSalidasByInsumo(insumoId);
-        
-        if (totalEntradas == null) totalEntradas = BigDecimal.ZERO;
-        if (totalSalidas == null) totalSalidas = BigDecimal.ZERO;
+        double totalEntradas = movimientoRepository.sumEntradasByInsumo(insumoId);
+        double totalSalidas = movimientoRepository.sumSalidasByInsumo(insumoId);
         
         return InsumoEstadisticasDTO.builder()
                 .insumoId(insumoId)
                 .totalEntradas(totalEntradas)
                 .totalSalidas(totalSalidas)
-                .saldoActual(totalEntradas.subtract(totalSalidas))
+                .saldoActual(totalEntradas - totalSalidas)
                 .build();
     }
     

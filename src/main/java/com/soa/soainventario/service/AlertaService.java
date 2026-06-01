@@ -89,4 +89,28 @@ public class AlertaService {
                 .resueltaEn(alerta.getResueltaEn())
                 .build();
     }
+
+    @Transactional(readOnly = true)
+    public List<AlertaResponseDTO> listarAlertasStockBajo() {
+        // Obtener insumos con stock actual < stock minimo
+        List<Insumo> insumosConStockBajo = insumoRepository.findInsumosConStockBajo();
+        
+        // Para cada uno, crear o recuperar alerta activa
+        return insumosConStockBajo.stream()
+                .map(insumo -> {
+                    // Buscar alerta activa existente
+                    List<AlertaStock> alertas = alertaRepository.findByInsumoIdAndEstado(insumo.getId(), "ACTIVA");
+                    if (!alertas.isEmpty()) {
+                        return mapToResponseDTO(alertas.get(0));
+                    }
+                    // Crear nueva alerta
+                    AlertaStock nuevaAlerta = new AlertaStock();
+                    nuevaAlerta.setInsumo(insumo);
+                    nuevaAlerta.setNivelActual(insumo.getStockActual());
+                    nuevaAlerta.setNivelMinimo(insumo.getStockMinimo());
+                    nuevaAlerta.setEstado("ACTIVA");
+                    return mapToResponseDTO(alertaRepository.save(nuevaAlerta));
+                })
+                .collect(Collectors.toList());
+    }
 }

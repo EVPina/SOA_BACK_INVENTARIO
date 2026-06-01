@@ -49,4 +49,9 @@ public class AlertaController {
     public ResponseEntity<Long> contarAlertasActivas() {
         return ResponseEntity.ok(alertaService.contarAlertasActivas());
     }
+    @GetMapping("/stock-bajo")
+    @Operation(summary = "Obtener alertas de stock mínimo")
+    public ResponseEntity<List<AlertaResponseDTO>> listarAlertasStockBajo() {
+        return ResponseEntity.ok(alertaService.listarAlertasStockBajo());
+    }
 }

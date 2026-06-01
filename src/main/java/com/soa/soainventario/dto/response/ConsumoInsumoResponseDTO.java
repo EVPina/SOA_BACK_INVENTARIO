@@ -14,8 +14,8 @@ public class ConsumoInsumoResponseDTO {
     private UUID insumoId;
     private String insumoNombre;
     private String unidadMedida;
-    private BigDecimal cantidadPorPorcion;
-    private BigDecimal costoUnitario;
-    private BigDecimal costoTotal;
+    private double cantidadPorPorcion;
+    private double costoUnitario;
+    private double costoTotal;
     private LocalDateTime createdAt;
 }

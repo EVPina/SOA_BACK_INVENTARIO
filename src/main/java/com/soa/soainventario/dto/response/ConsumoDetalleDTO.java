@@ -10,10 +10,10 @@ import java.util.UUID;
 public class ConsumoDetalleDTO {
     private UUID insumoId;
     private String insumoNombre;
-    private BigDecimal cantidadConsumida;
-    private BigDecimal stockAntes;
-    private BigDecimal stockDespues;
-    private BigDecimal costoUnitario;
-    private BigDecimal costoTotal;
+    private double cantidadConsumida;
+    private double stockAntes;
+    private double stockDespues;
+    private double costoUnitario;
+    private double costoTotal;
     private Boolean suficiente;
 }

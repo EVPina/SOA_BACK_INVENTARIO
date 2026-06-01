@@ -37,10 +37,10 @@ public interface MovimientoRepository extends JpaRepository<MovimientoInventario
     // Total de entradas por insumo
     @Query("SELECT SUM(m.cantidad) FROM MovimientoInventario m " +
            "WHERE m.insumo.id = :insumoId AND m.tipo = 'ENTRADA'")
-    BigDecimal sumEntradasByInsumo(@Param("insumoId") UUID insumoId);
+    double sumEntradasByInsumo(@Param("insumoId") UUID insumoId);
     
     // Total de salidas por insumo
     @Query("SELECT SUM(m.cantidad) FROM MovimientoInventario m " +
            "WHERE m.insumo.id = :insumoId AND m.tipo = 'SALIDA'")
-    BigDecimal sumSalidasByInsumo(@Param("insumoId") UUID insumoId);
+    double sumSalidasByInsumo(@Param("insumoId") UUID insumoId);
 }

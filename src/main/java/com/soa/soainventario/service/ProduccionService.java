@@ -29,7 +29,7 @@ public class ProduccionService {
     // Producir producto
     @Transactional
     public ProduccionResponseDTO producirProducto(ProduccionRequestDTO request) {
-        BigDecimal cantidadProductos = BigDecimal.valueOf(request.getCantidad());
+        double cantidadProductos = Double.valueOf(request.getCantidad());
         
         // Obtener insumos necesarios
         List<Object[]> insumosNecesarios = consumoInsumoRepository.verificarStockParaProduccion(
@@ -41,7 +41,7 @@ public class ProduccionService {
             return ProduccionResponseDTO.builder()
                     .productoId(request.getProductoId())
                     .cantidadProducida(0)
-                    .costoTotalProduccion(BigDecimal.ZERO)
+                    .costoTotalProduccion(0.0)
                     .insumosConsumidos(new ArrayList<>())
                     .exito(false)
                     .mensaje("El producto no tiene insumos definidos en su receta")
@@ -50,30 +50,30 @@ public class ProduccionService {
         
         List<ConsumoDetalleDTO> detalles = new ArrayList<>();
         boolean stockSuficiente = true;
-        BigDecimal costoTotalProduccion = BigDecimal.ZERO;
+        double costoTotalProduccion = 0.0;
         
         // Verificar stock y preparar detalles
         for (Object[] insumo : insumosNecesarios) {
             UUID insumoId = (UUID) insumo[0];
             String insumoNombre = (String) insumo[1];
-            BigDecimal stockActual = (BigDecimal) insumo[2];
-            BigDecimal cantidadNecesaria = (BigDecimal) insumo[4];
+            double stockActual = (Double) insumo[2];
+            int cantidadNecesaria = (int) insumo[4];
             
             Insumo insumoEntity = insumoRepository.findById(insumoId).orElse(null);
-            BigDecimal costoUnitario = insumoEntity != null ? insumoEntity.getCostoPorUnidad() : BigDecimal.ZERO;
-            BigDecimal costoTotalInsumo = cantidadNecesaria.multiply(costoUnitario);
+            double costoUnitario = insumoEntity != null ? insumoEntity.getCostoPorUnidad() : 0.0;
+            double costoTotalInsumo = insumoEntity != null ? insumoEntity.getCostoPorUnidad() * cantidadNecesaria : 0.0;
             
-            boolean suficiente = stockActual.compareTo(cantidadNecesaria) >= 0;
+            boolean suficiente = stockActual >= cantidadNecesaria;
             if (!suficiente) stockSuficiente = false;
             
-            costoTotalProduccion = costoTotalProduccion.add(costoTotalInsumo);
+            costoTotalProduccion += costoTotalInsumo;
             
             ConsumoDetalleDTO detalle = ConsumoDetalleDTO.builder()
                     .insumoId(insumoId)
                     .insumoNombre(insumoNombre)
                     .cantidadConsumida(cantidadNecesaria)
                     .stockAntes(stockActual)
-                    .stockDespues(suficiente ? stockActual.subtract(cantidadNecesaria) : stockActual)
+                    .stockDespues(suficiente ? stockActual - cantidadNecesaria : stockActual)
                     .costoUnitario(costoUnitario)
                     .costoTotal(costoTotalInsumo)
                     .suficiente(suficiente)
@@ -89,7 +89,7 @@ public class ProduccionService {
                         .orElseThrow(() -> new RuntimeException("Insumo no encontrado: " + detalle.getInsumoId()));
                 
                 // Actualizar stock
-                BigDecimal nuevoStock = insumo.getStockActual().subtract(detalle.getCantidadConsumida());
+                double nuevoStock = insumo.getStockActual() - detalle.getCantidadConsumida();
                 insumo.setStockActual(nuevoStock);
                 insumoRepository.save(insumo);
                 
@@ -101,7 +101,7 @@ public class ProduccionService {
                 movimiento.setStockResultante(nuevoStock);
                 movimiento.setMotivo("Produccion");
                 movimiento.setUsuarioId(request.getUsuarioId());
-                movimiento.setReferenciaId(request.getProductoId()); // Referencia al producto externo
+                movimiento.setReferenciaId(request.getProductoId().toString()); // Referencia al producto externo
                 movimiento.setCreatedAt(LocalDateTime.now());
                 movimientoRepository.save(movimiento);
             }
@@ -123,7 +123,7 @@ public class ProduccionService {
     // Verificar disponibilidad
     @Transactional(readOnly = true)
     public ProduccionResponseDTO verificarDisponibilidad(ProduccionRequestDTO request) {
-        BigDecimal cantidadProductos = BigDecimal.valueOf(request.getCantidad());
+        double cantidadProductos = request.getCantidad();
         
         List<Object[]> insumosNecesarios = consumoInsumoRepository.verificarStockParaProduccion(
                 request.getProductoId(), 
@@ -132,21 +132,21 @@ public class ProduccionService {
         
         List<ConsumoDetalleDTO> detalles = new ArrayList<>();
         boolean stockSuficiente = true;
-        BigDecimal costoTotalProduccion = BigDecimal.ZERO;
+        double costoTotalProduccion = 0.0;
         
         for (Object[] insumo : insumosNecesarios) {
             UUID insumoId = (UUID) insumo[0];
             String insumoNombre = (String) insumo[1];
-            BigDecimal stockActual = (BigDecimal) insumo[2];
-            BigDecimal cantidadNecesaria = (BigDecimal) insumo[4];
+            double stockActual = (double) insumo[2];
+            double cantidadNecesaria = (double) insumo[4];
             
             Insumo insumoEntity = insumoRepository.findById(insumoId).orElse(null);
-            BigDecimal costoUnitario = insumoEntity != null ? insumoEntity.getCostoPorUnidad() : BigDecimal.ZERO;
-            BigDecimal costoTotalInsumo = cantidadNecesaria.multiply(costoUnitario);
+            double costoUnitario = insumoEntity != null ? insumoEntity.getCostoPorUnidad() : 0.0;
+            double costoTotalInsumo = cantidadNecesaria * costoUnitario;
             
-            boolean suficiente = stockActual.compareTo(cantidadNecesaria) >= 0;
+            boolean suficiente = stockActual >= cantidadNecesaria;
             if (!suficiente) stockSuficiente = false;
-            costoTotalProduccion = costoTotalProduccion.add(costoTotalInsumo);
+            costoTotalProduccion += costoTotalInsumo;
             
             ConsumoDetalleDTO detalle = ConsumoDetalleDTO.builder()
                     .insumoId(insumoId)

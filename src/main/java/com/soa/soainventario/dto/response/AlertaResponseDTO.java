@@ -12,8 +12,8 @@ public class AlertaResponseDTO {
     private UUID id;
     private UUID insumoId;
     private String insumoNombre;
-    private BigDecimal nivelActual;
-    private BigDecimal nivelMinimo;
+    private double nivelActual;
+    private double nivelMinimo;
     private String unidadMedida;
     private String estado;
     private LocalDateTime creadaEn;

@@ -2,20 +2,23 @@ package com.soa.soainventario.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Data
 @Entity
-@Table(schema="public",name = "insumos")
+@NoArgsConstructor
+@AllArgsConstructor
+@Table(name = "insumos", schema = "public")
 public class Insumo {
     
     @Id
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
-    @Column(columnDefinition = "uuid")
+    @Column(columnDefinition = "uuid", updatable = false, nullable = false)
     private UUID id;
     
     @Column(nullable = false, length = 100, unique = true)
@@ -24,14 +27,14 @@ public class Insumo {
     @Column(name = "unidad_medida", nullable = false, length = 10)
     private String unidadMedida;
     
-    @Column(name = "stock_actual", nullable = false, precision = 10, scale = 2)
-    private BigDecimal stockActual;
+    @Column(name = "stock_actual", nullable = false)  // ← Sin precision/scale
+    private double stockActual;
     
-    @Column(name = "stock_minimo", nullable = false, precision = 10, scale = 2)
-    private BigDecimal stockMinimo;
+    @Column(name = "stock_minimo", nullable = false)  // ← Sin precision/scale
+    private double stockMinimo;
     
-    @Column(name = "costo_por_unidad", nullable = false, precision = 10, scale = 2)
-    private BigDecimal costoPorUnidad;
+    @Column(name = "costo_por_unidad", nullable = false)  // ← Sin precision/scale
+    private double costoPorUnidad;
     
     @Column(length = 50)
     private String ubicacion;
@@ -46,7 +49,7 @@ public class Insumo {
     protected void onCreate() {
         createdAt = LocalDateTime.now();
         updatedAt = LocalDateTime.now();
-        if (stockActual == null) stockActual = BigDecimal.ZERO;
+        stockActual = 0.0;
     }
     
     @PreUpdate

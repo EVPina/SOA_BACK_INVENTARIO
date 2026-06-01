@@ -12,9 +12,9 @@ public class InsumoResponseDTO {
     private UUID id;
     private String nombre;
     private String unidadMedida;
-    private BigDecimal stockActual;
-    private BigDecimal stockMinimo;
-    private BigDecimal costoPorUnidad;
+    private double stockActual;
+    private double stockMinimo;
+    private double costoPorUnidad;
     private String ubicacion;
     private String estadoStock;
     private LocalDateTime createdAt;

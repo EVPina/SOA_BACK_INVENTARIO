@@ -10,8 +10,8 @@ import java.util.UUID;
 @Builder
 public class ProduccionResponseDTO {
     private UUID productoId;  // ID externo del producto
-    private Integer cantidadProducida;
-    private BigDecimal costoTotalProduccion;
+    private double cantidadProducida;
+    private double costoTotalProduccion;
     private List<ConsumoDetalleDTO> insumosConsumidos;
     private Boolean exito;
     private String mensaje;

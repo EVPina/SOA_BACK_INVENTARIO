@@ -12,9 +12,9 @@ import java.util.UUID;
 
 public interface InsumoRepository extends JpaRepository<Insumo, UUID> {
     
-    List<Insumo> findByStockActualLessThan(BigDecimal stockMinimo);
+    List<Insumo> findByStockActualLessThan(double stockMinimo);
     
-    List<Insumo> findByStockActualLessThanEqualOrderByStockActualAsc(BigDecimal stockMinimo);
+    List<Insumo> findByStockActualLessThanEqualOrderByStockActualAsc(double stockMinimo);
     
     @Query("SELECT i FROM Insumo i WHERE i.stockActual < i.stockMinimo")
     List<Insumo> findInsumosConStockBajo();

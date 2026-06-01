@@ -41,14 +41,14 @@ public interface ConsumoInsumoRepository extends JpaRepository<ConsumoInsumo, UU
     // Calcular costo total de producción (necesita costo por unidad del insumo)
     @Query("SELECT SUM(c.cantidadPorPorcion * i.costoPorUnidad) FROM ConsumoInsumo c " +
            "JOIN c.insumo i WHERE c.productoId = :productoId")
-    BigDecimal calcularCostoProduccion(@Param("productoId") UUID productoId);
+    double calcularCostoProduccion(@Param("productoId") UUID productoId);
     
     // Verificar stock para producción (usando productoId externo)
     @Query("SELECT c.insumo.id, c.insumo.nombre, c.insumo.stockActual, " +
            "c.cantidadPorPorcion, (c.cantidadPorPorcion * :cantidadProductos) as cantidadNecesaria " +
            "FROM ConsumoInsumo c WHERE c.productoId = :productoId")
     List<Object[]> verificarStockParaProduccion(@Param("productoId") UUID productoId, 
-                                                  @Param("cantidadProductos") BigDecimal cantidadProductos);
+                                                  @Param("cantidadProductos") double cantidadProductos);
     
     // Obtener resumen de insumos por producto
     @Query("SELECT c.insumo.id, c.insumo.nombre, c.insumo.unidadMedida, " +

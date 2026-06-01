@@ -17,5 +17,5 @@ public class ConsumoInsumoRequestDTO {
     
     @NotNull(message = "La cantidad por porción es obligatoria")
     @Positive(message = "La cantidad por porción debe ser mayor a 0")
-    private BigDecimal cantidadPorPorcion;
+    private double cantidadPorPorcion;
 }

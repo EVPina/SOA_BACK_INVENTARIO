@@ -31,9 +31,10 @@ public class MovimientoController {
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
     
-    @GetMapping("/insumo/{insumoId}")
-    @Operation(summary = "Listar movimientos por insumo")
-    public ResponseEntity<List<MovimientoResponseDTO>> listarMovimientosPorInsumo(@PathVariable UUID insumoId) {
+    // La ruta debe ser /movimientos/{id} (no /movimientos/insumo/{id})
+    @GetMapping("/{insumoId}")
+    @Operation(summary = "Historial de movimientos de un insumo")
+    public ResponseEntity<List<MovimientoResponseDTO>> getHistorialByInsumo(@PathVariable UUID insumoId) {
         return ResponseEntity.ok(movimientoService.listarMovimientosPorInsumo(insumoId));
     }
     

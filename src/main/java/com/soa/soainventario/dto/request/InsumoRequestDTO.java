@@ -1,27 +1,33 @@
 package com.soa.soainventario.dto.request;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
-import java.math.BigDecimal;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class InsumoRequestDTO {
     
+    @JsonProperty("nombre")
     @NotBlank(message = "El nombre es obligatorio")
-    @Size(max = 100, message = "El nombre no puede exceder 100 caracteres")
     private String nombre;
     
+    @JsonProperty("unidadMedida")
     @NotBlank(message = "La unidad de medida es obligatoria")
     @Pattern(regexp = "KILOS|UNIDADES|LITROS", message = "Unidad de medida inválida")
     private String unidadMedida;
     
+    @JsonProperty("stockMinimo")
     @NotNull(message = "El stock mínimo es obligatorio")
-    @DecimalMin(value = "0.0", inclusive = false, message = "El stock mínimo debe ser mayor a 0")
-    private BigDecimal stockMinimo;
-    
+    private double stockMinimo;
+        
+    @JsonProperty("costoPorUnidad")
     @NotNull(message = "El costo por unidad es obligatorio")
-    @DecimalMin(value = "0.0", message = "El costo por unidad no puede ser negativo")
-    private BigDecimal costoPorUnidad;
+    private double costoPorUnidad;
     
+    @JsonProperty("ubicacion")
     private String ubicacion;
 }

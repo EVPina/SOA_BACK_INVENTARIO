@@ -10,7 +10,7 @@ import java.util.UUID;
 public class ResumenProductoDTO {
     private UUID productoId;
     private String productoNombre;  // Este vendría del otro servicio
-    private BigDecimal costoProduccionTotal;
+    private double costoProduccionTotal;
     private Integer cantidadInsumos;
-    private BigDecimal precioVentaEstimado;  // Si se quiere sugerir precio
+    private double precioVentaEstimado;  // Si se quiere sugerir precio
 }

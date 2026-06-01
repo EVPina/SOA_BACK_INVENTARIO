@@ -10,8 +10,8 @@ import java.util.UUID;
 public class InsumoEstadisticasDTO {
     private UUID insumoId;
     private String insumoNombre;  // Opcional: para mostrar el nombre
-    private BigDecimal totalEntradas;
-    private BigDecimal totalSalidas;
-    private BigDecimal saldoActual;
+    private double totalEntradas;
+    private double totalSalidas;
+    private double saldoActual;
     private Integer totalMovimientos;  // Opcional: contador de movimientos
 }
