@@ -16,7 +16,9 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -125,6 +127,8 @@ public class ProduccionService {
     public ProduccionResponseDTO verificarDisponibilidad(ProduccionRequestDTO request) {
         double cantidadProductos = request.getCantidad();
         
+        log.info("Verificando producto: {}, cantidad: {}", request.getProductoId(), cantidadProductos);
+
         List<Object[]> insumosNecesarios = consumoInsumoRepository.verificarStockParaProduccion(
                 request.getProductoId(), 
                 cantidadProductos
@@ -134,6 +138,8 @@ public class ProduccionService {
         boolean stockSuficiente = true;
         double costoTotalProduccion = 0.0;
         
+        log.info("Insumos encontrados: {}", insumosNecesarios.size());
+
         for (Object[] insumo : insumosNecesarios) {
             UUID insumoId = (UUID) insumo[0];
             String insumoNombre = (String) insumo[1];

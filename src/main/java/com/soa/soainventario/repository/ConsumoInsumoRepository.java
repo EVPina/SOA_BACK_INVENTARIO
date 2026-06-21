@@ -44,11 +44,15 @@ public interface ConsumoInsumoRepository extends JpaRepository<ConsumoInsumo, UU
     double calcularCostoProduccion(@Param("productoId") UUID productoId);
     
     // Verificar stock para producción (usando productoId externo)
-    @Query("SELECT c.insumo.id, c.insumo.nombre, c.insumo.stockActual, " +
-           "c.cantidadPorPorcion, (c.cantidadPorPorcion * :cantidadProductos) as cantidadNecesaria " +
-           "FROM ConsumoInsumo c WHERE c.productoId = :productoId")
-    List<Object[]> verificarStockParaProduccion(@Param("productoId") UUID productoId, 
-                                                  @Param("cantidadProductos") double cantidadProductos);
+       @Query(value = "SELECT ci.insumo_id, i.nombre, i.stock_actual, " +
+                     "ci.cantidad_por_porcion, " +
+                     "(ci.cantidad_por_porcion * :cantidadProductos) as cantidad_necesaria " +
+                     "FROM consumo_insumos ci " +
+                     "INNER JOIN insumos i ON i.id = ci.insumo_id " +
+                     "WHERE ci.producto_id = :productoId", 
+              nativeQuery = true)
+       List<Object[]> verificarStockParaProduccion(@Param("productoId") UUID productoId,
+                                                 @Param("cantidadProductos") double cantidadProductos);
     
     // Obtener resumen de insumos por producto
     @Query("SELECT c.insumo.id, c.insumo.nombre, c.insumo.unidadMedida, " +
