@@ -7,6 +7,8 @@ import com.soa.soainventario.dto.response.InsumoResponseDTO;
 import com.soa.soainventario.dto.response.StockResponseDTO;
 import com.soa.soainventario.service.InsumoService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -30,18 +32,31 @@ public class InsumoController {
     
     @GetMapping
     @Operation(summary = "Listar todos los insumos")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Lista de insumos"),
+        @ApiResponse(responseCode = "400", description = "Solicitud inválida"),
+        @ApiResponse(responseCode = "404", description = "Insumos no encontrados")
+    })
     public ResponseEntity<List<InsumoResponseDTO>> listarTodos() {
         return ResponseEntity.ok(insumoService.listarTodos());
     }
     
     @GetMapping("stock/{id}")
     @Operation(summary = "Obtener insumo por ID")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Insumo encontrado"),
+        @ApiResponse(responseCode = "404", description = "Insumo no encontrado")
+    })
     public ResponseEntity<InsumoResponseDTO> buscarInsumo(@PathVariable UUID id) {
         return ResponseEntity.ok(insumoService.buscarInsumo(id));
     }
     
     @PostMapping
     @Operation(summary = "Crear nuevo insumo")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "201", description = "Insumo creado exitosamente"),
+        @ApiResponse(responseCode = "400", description = "Solicitud inválida")
+    })
     public ResponseEntity<InsumoResponseDTO> crearInsumo(@Valid @RequestBody InsumoRequestDTO request) {
         InsumoResponseDTO nuevoInsumo = insumoService.crearInsumo(request);
         return new ResponseEntity<>(nuevoInsumo, HttpStatus.CREATED);
@@ -49,6 +64,10 @@ public class InsumoController {
     
     @PutMapping("/{id}")
     @Operation(summary = "Actualizar insumo")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Insumo actualizado exitosamente"),
+        @ApiResponse(responseCode = "404", description = "Insumo no encontrado")
+    })
     public ResponseEntity<InsumoResponseDTO> actualizarInsumo(
             @PathVariable UUID id,
             @Valid @RequestBody InsumoRequestDTO request) {
@@ -58,6 +77,10 @@ public class InsumoController {
     
     @DeleteMapping("/{id}")
     @Operation(summary = "Eliminar insumo")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Insumo eliminado exitosamente"),
+        @ApiResponse(responseCode = "404", description = "Insumo no encontrado")
+    })
     public ResponseEntity<Void> eliminarInsumo(@PathVariable UUID id) {
         insumoService.eliminarInsumo(id);
         return ResponseEntity.noContent().build();
@@ -65,6 +88,10 @@ public class InsumoController {
     
     @PatchMapping("/{id}/stock")
     @Operation(summary = "Actualizar stock del insumo")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Stock actualizado exitosamente"),
+        @ApiResponse(responseCode = "404", description = "Insumo no encontrado")
+    })
     public ResponseEntity<InsumoResponseDTO> actualizarStock(
             @PathVariable UUID id,
             @RequestParam double cantidad) {
@@ -74,6 +101,10 @@ public class InsumoController {
     
     @PatchMapping("/{id}/stock/incrementar")
     @Operation(summary = "Incrementar stock del insumo")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Stock incrementado exitosamente"),
+        @ApiResponse(responseCode = "404", description = "Insumo no encontrado")
+    })
     public ResponseEntity<InsumoResponseDTO> incrementarStock(
             @PathVariable UUID id,
             @RequestParam double cantidad) {
@@ -83,6 +114,10 @@ public class InsumoController {
     
     @PatchMapping("/{id}/stock/decrementar")
     @Operation(summary = "Decrementar stock del insumo")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Stock decrementado exitosamente"),
+        @ApiResponse(responseCode = "404", description = "Insumo no encontrado")
+    })
     public ResponseEntity<InsumoResponseDTO> decrementarStock(
             @PathVariable UUID id,
             @RequestParam double cantidad) {
@@ -92,6 +127,10 @@ public class InsumoController {
 
       @PutMapping("/descontar")
     @Operation(summary = "Descontar stock al marcar LISTO")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Stock descontado exitosamente"),
+        @ApiResponse(responseCode = "400", description = "Solicitud inválida")
+    })
     public ResponseEntity<StockResponseDTO> descontarStock(@Valid @RequestBody DescuentoRequestDTO request) {
         StockResponseDTO response = insumoService.descontarStock(request);
     // public DescuentoRequestDTO crearInsumo(@RequestBody DescuentoRequestDTO request) {

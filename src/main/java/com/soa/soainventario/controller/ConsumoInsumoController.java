@@ -4,6 +4,8 @@ import com.soa.soainventario.dto.request.ConsumoInsumoRequestDTO;
 import com.soa.soainventario.dto.response.ConsumoInsumoResponseDTO;
 import com.soa.soainventario.service.ConsumoInsumoService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -24,12 +26,20 @@ public class ConsumoInsumoController {
     
     @PostMapping
     @Operation(summary = "Asignar insumo a producto externo")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "201", description = "Insumo asignado exitosamente"),
+        @ApiResponse(responseCode = "400", description = "Solicitud inválida")
+    })
     public ResponseEntity<ConsumoInsumoResponseDTO> asignarInsumo(@Valid @RequestBody ConsumoInsumoRequestDTO request) {
         return new ResponseEntity<>(consumoInsumoService.asignarInsumoAProducto(request), HttpStatus.CREATED);
     }
     
     @PutMapping("/{consumoId}")
     @Operation(summary = "Actualizar cantidad de consumo")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Consumo actualizado exitosamente"),
+        @ApiResponse(responseCode = "404", description = "Consumo no encontrado")
+    })
     public ResponseEntity<ConsumoInsumoResponseDTO> actualizarConsumo(
             @PathVariable UUID consumoId,
             @RequestParam double cantidad) {
@@ -38,6 +48,10 @@ public class ConsumoInsumoController {
     
     @DeleteMapping("/{consumoId}")
     @Operation(summary = "Eliminar consumo de insumo")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Consumo eliminado exitosamente"),
+        @ApiResponse(responseCode = "404", description = "Consumo no encontrado")
+    })
     public ResponseEntity<Void> eliminarConsumo(@PathVariable UUID consumoId) {
         consumoInsumoService.eliminarConsumo(consumoId);
         return ResponseEntity.noContent().build();
@@ -45,6 +59,10 @@ public class ConsumoInsumoController {
     
     @DeleteMapping("/producto/{productoId}")
     @Operation(summary = "Eliminar todos los consumos de un producto")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Consumos eliminados exitosamente"),
+        @ApiResponse(responseCode = "404", description = "Producto no encontrado")
+    })
     public ResponseEntity<Void> eliminarConsumosPorProducto(@PathVariable UUID productoId) {
         consumoInsumoService.eliminarConsumosPorProducto(productoId);
         return ResponseEntity.noContent().build();
@@ -52,12 +70,18 @@ public class ConsumoInsumoController {
     
     @GetMapping("/producto/{productoId}")
     @Operation(summary = "Listar consumos por producto externo")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Lista de consumos")
+    })
     public ResponseEntity<List<ConsumoInsumoResponseDTO>> listarPorProducto(@PathVariable UUID productoId) {
         return ResponseEntity.ok(consumoInsumoService.listarConsumosPorProducto(productoId));
     }
     
     @GetMapping("/producto/{productoId}/costo")
     @Operation(summary = "Calcular costo de producción de un producto")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Costo de producción calculado exitosamente")
+    })
     public ResponseEntity<Double> calcularCostoProduccion(@PathVariable UUID productoId) {
         return ResponseEntity.ok(consumoInsumoService.calcularCostoProduccion(productoId));
     }
