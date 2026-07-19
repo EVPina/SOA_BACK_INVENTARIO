@@ -25,7 +25,7 @@ import java.util.UUID;
 @RequestMapping("/api/v1/insumos")
 @RequiredArgsConstructor
 @Tag(name = "Insumos", description = "API para gestionar insumos del inventario")
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "${app.frontend-url:http://localhost:4200}")
 public class InsumoController {
     
     private final InsumoService insumoService;
